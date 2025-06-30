@@ -5,12 +5,11 @@ const pool = require('./database.js');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// CORREÇÃO: Adicionada a URL do site na lista de origens permitidas
 const corsOptions = {
   origin: [
     'http://127.0.0.1:5500',
     'http://localhost:5500',
-    'https://medlab-site.onrender.com' // <-- URL DO SEU SITE ADICIONADA
+    'https://medlab-site.onrender.com'
   ],
   optionsSuccessStatus: 200
 };
@@ -129,6 +128,17 @@ app.get('/api/solicitacoes', async (req, res) => {
         res.json({ success: true, data: result.rows });
     } catch (err) {
         res.status(500).json({ success: false, message: 'Erro ao buscar solicitações.' });
+    }
+});
+
+// ROTA ADICIONADA QUE ESTAVA FALTANDO
+app.get('/api/solicitacoes/:login', async (req, res) => {
+    try {
+        const sql = "SELECT * FROM solicitacoes WHERE unidade_login = $1 ORDER BY id DESC";
+        const result = await pool.query(sql, [req.params.login]);
+        res.json({success: true, data: result.rows});
+    } catch (err) {
+        res.status(500).json({success: false, message: 'Erro ao buscar solicitações da unidade.'});
     }
 });
 
