@@ -1,4 +1,3 @@
-// server.js (versão final corrigida)
 const express = require('express');
 const cors = require('cors');
 const pool = require('./database.js');
@@ -6,10 +5,12 @@ const pool = require('./database.js');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// CORREÇÃO: Adicionada a URL do site na lista de origens permitidas
 const corsOptions = {
   origin: [
     'http://127.0.0.1:5500',
-    'http://localhost:5500'
+    'http://localhost:5500',
+    'https://medlab-site.onrender.com' // <-- URL DO SEU SITE ADICIONADA
   ],
   optionsSuccessStatus: 200
 };
