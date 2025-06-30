@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurações - MedLab Gestão de Insumos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .custom-scrollbar::-webkit-scrollbar { width: 8px; height: 8px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #c5c5c5; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #a5a5a5; }
+        .modal { transition: opacity 0.25s ease; }
+        .modal-content { transition: transform 0.25s ease; }
+        .list-item-detail { font-size: 0.8rem; color: #6b7280; }
+        
+        :root {
+            --medlab-red: #D92325; --medlab-red-darker: #B81D1F; --medlab-red-lighter: #fee2e2; 
+        }
+        .btn-primary-medlab { background-color: var(--medlab-red); color: white; }
+        .btn-primary-medlab:hover { background-color: var(--medlab-red-darker); }
+        .focus-ring-medlab:focus { --tw-ring-color: var(--medlab-red); border-color: var(--medlab-red) !important; }
+        .input-focus-medlab:focus { border-color: var(--medlab-red); box-shadow: 0 0 0 2px var(--medlab-red); }
+        .checkbox-medlab:checked { background-color: var(--medlab-red); border-color: var(--medlab-red); }
+        .text-medlab-primary { color: var(--medlab-red); }
+        .action-btn { padding: 0.25rem 0.5rem; font-size: 0.75rem; border-radius: 0.375rem; transition: background-color 0.15s ease-in-out; }
+        .edit-btn { background-color: #3b82f6; color: white; } 
+        .edit-btn:hover { background-color: #2563eb; } 
+        .delete-btn { background-color: #ef4444; color: white; } 
+        .delete-btn:hover { background-color: #dc2626; } 
+        .insumo-item-config {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 0.75rem;
+            align-items: center;
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+        }
+        .insumo-item-config:hover {
+            background-color: #f9fafb;
+        }
+        .input-minimo-unidade {
+            width: 5rem; /* w-20 */
+            text-align: center;
+            font-size: 0.875rem; /* text-sm */
+            padding: 0.25rem 0.5rem; /* py-1 px-2 */
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <header class="bg-white shadow-md sticky top-0 z-40">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                     <img src="LOGO MEDLAB (2).png" alt="Logo MedLab" class="h-8 sm:h-10 w-auto mr-2 sm:mr-3"
+                         onerror="this.onerror=null; this.src='https://placehold.co/150x40/D92325/FFFFFF?text=MedLab&font=Inter'; this.alt='Logo MedLab Placeholder';">
+                    <h1 class="text-lg sm:text-xl font-semibold text-gray-800">Configurações do Sistema</h1>
+                </div>
+                <a href="painel.html" class="text-xs sm:text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg transition-colors duration-150 flex items-center">
+                    <i class="fas fa-arrow-left mr-2"></i> Voltar ao Painel
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto p-3 sm:p-4 md:p-6 lg:p-8 max-w-7xl">
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6">
+            
+            <div class="bg-white p-4 sm:p-6 rounded-xl shadow-lg">
+                <h2 class="text-lg sm:text-xl font-semibold text-gray-800 border-b pb-3 mb-4">1. Cadastrar Novo Insumo</h2>
+                <form id="form-insumo-config" class="space-y-4">
+                    <div>
+                        <label for="nome-insumo-config" class="block text-sm font-medium text-gray-700">Nome do Insumo</label>
+                        <input type="text" id="nome-insumo-config" required placeholder="Ex: Gaze Estéril 10x10" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none input-focus-medlab sm:text-sm">
+                    </div>
+                    <div>
+                        <label for="unidade-medida-config" class="block text-sm font-medium text-gray-700">Unidade de Medida Principal</label>
+                        <select id="unidade-medida-config" required class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus-ring-medlab sm:text-sm rounded-md shadow-sm">
+                            <option value="">Selecione...</option>
+                            <option value="Unidade">Unidade (un)</option>
+                            <option value="Caixa">Caixa (cx)</option>
+                            <option value="Pacote">Pacote (pct)</option>
+                            <option value="Frasco">Frasco (fr)</option>
+                            <option value="Litro">Litro (L)</option>
+                            <option value="mL">Mililitro (mL)</option>
+                            <option value="Metro">Metro (m)</option>
+                            <option value="Rolo">Rolo (rl)</option>
+                            <option value="Par">Par</option>
+                        </select>
+                    </div>
+                     <div>
+                        <label for="valor-compra-config" class="block text-sm font-medium text-gray-700">Valor de Compra (R$)</label>
+                        <input type="number" id="valor-compra-config" required placeholder="Ex: 25.50" min="0" step="0.01" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none input-focus-medlab sm:text-sm">
+                    </div>
+                    <div>
+                        <label for="tipo-valor-compra-config" class="block text-sm font-medium text-gray-700">Este valor é por:</label>
+                        <select id="tipo-valor-compra-config" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus-ring-medlab sm:text-sm rounded-md shadow-sm">
+                            <option value="unidade_medida_principal">Unidade de Medida Principal</option>
+                            <option value="un">Unidade (avulsa)</option>
+                            <option value="cx">Caixa</option>
+                            <option value="pct">Pacote</option>
+                            <option value="fr">Frasco</option>
+                            <option value="L">Litro</option>
+                            <option value="mL">Mililitro</option>
+                             <option value="m">Metro</option>
+                            <option value="rl">Rolo</option>
+                            <option value="par">Par</option>
+                        </select>
+                    </div>
+                    <div id="embalagem-details-config" class="space-y-4 hidden"> <div>
+                            <label for="itens-por-embalagem-config" class="block text-sm font-medium text-gray-700">Itens (da Un. de Medida Principal) por Embalagem de Compra</label>
+                            <input type="number" id="itens-por-embalagem-config" placeholder="Ex: 100" min="1" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none input-focus-medlab sm:text-sm">
+                            <p class="mt-1 text-xs text-gray-500">Preencha apenas se "Este valor é por:" for diferente de "Unidade de Medida Principal".</p>
+                        </div>
+                    </div>
+                    <hr class="border-dashed">
+                    <div>
+                        <label for="qtd-estoque-matriz-config" class="block text-sm font-medium text-gray-700">Qtd. Inicial em Estoque (Matriz) <span class="text-xs text-gray-500">(na Un. de Medida Principal)</span></label>
+                        <input type="number" id="qtd-estoque-matriz-config" required placeholder="Ex: 100" min="0" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none input-focus-medlab sm:text-sm">
+                    </div>
+                    <div>
+                        <label for="qtd-minima-insumo-config" class="block text-sm font-medium text-gray-700">Qtd. Mínima Global (Alerta no Estoque Matriz)</label>
+                        <input type="number" id="qtd-minima-insumo-config" required placeholder="Ex: 10" min="0" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none input-focus-medlab sm:text-sm">
+                    </div>
+                    <button type="submit" class="w-full btn-primary-medlab font-medium py-2 px-4 rounded-md shadow-sm">Adicionar Insumo</button>
+                </form>
+                <hr class="my-4 sm:my-6">
+                <h3 class="text-base sm:text-lg font-medium text-gray-700 mb-3">Últimos Insumos Cadastrados:</h3>
+                <ul id="lista-ultimos-insumos-config" class="max-h-32 sm:max-h-40 overflow-y-auto space-y-2 custom-scrollbar pr-2 text-xs sm:text-sm">
+                    <li class="text-gray-500 italic">Nenhum insumo.</li>
+                </ul>
+            </div>
+
+            <div class="bg-white p-4 sm:p-6 rounded-xl shadow-lg">
+                <h2 class="text-lg sm:text-xl font-semibold text-gray-800 border-b pb-3 mb-4">2. Cadastrar Unidade/Usuário</h2>
+                <form id="form-unidade-config" class="space-y-4">
+                    <div><label for="nome-unidade-config" class="block text-sm font-medium text-gray-700">Nome da Unidade/Usuário</label><input type="text" id="nome-unidade-config" required placeholder="Ex: Consultório 1 ou João Silva" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none input-focus-medlab sm:text-sm"></div>
+                    <div><label for="login-unidade-config" class="block text-sm font-medium text-gray-700">Login de Acesso</label><input type="text" id="login-unidade-config" required placeholder="Ex: clin01 ou joao.silva" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none input-focus-medlab sm:text-sm"></div>
+                    <div><label for="senha-unidade-config" class="block text-sm font-medium text-gray-700">Senha</label><input type="password" id="senha-unidade-config" required placeholder="Mínimo 6 caracteres" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none input-focus-medlab sm:text-sm"></div>
+                    <div>
+                        <label for="tipo-acesso-config" class="block text-sm font-medium text-gray-700">Tipo de Acesso</label>
+                        <select id="tipo-acesso-config" required class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus-ring-medlab sm:text-sm rounded-md shadow-sm">
+                            <option value="">Selecione o tipo...</option>
+                            <option value="unidade_restrita">Unidade (Acesso ao Painel da Unidade)</option>
+                            <option value="admin_gestao">Usuário Administrador (Acesso ao Painel de Gestão)</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="w-full btn-primary-medlab font-medium py-2 px-4 rounded-md shadow-sm">Adicionar Unidade/Usuário</button>
+                </form>
+                <hr class="my-4 sm:my-6">
+                <h3 class="text-base sm:text-lg font-medium text-gray-700 mb-3">Unidades/Usuários Cadastrados:</h3>
+                <ul id="lista-unidades-config" class="max-h-40 sm:max-h-48 overflow-y-auto space-y-2 custom-scrollbar pr-2 text-xs sm:text-sm">
+                    <li class="text-gray-500 italic">Nenhum cadastrado.</li>
+                </ul>
+            </div>
+
+            <div class="bg-white p-4 sm:p-6 rounded-xl shadow-lg">
+                <h2 class="text-lg sm:text-xl font-semibold text-gray-800 border-b pb-3 mb-4">3. Gerenciar Insumos Fixos</h2>
+                <div class="space-y-4">
+                    <div>
+                        <label for="select-unidade-config" class="block text-sm font-medium text-gray-700">Selecione Unidade</label>
+                        <select id="select-unidade-config" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus-ring-medlab sm:text-sm rounded-md shadow-sm"><option value="">-- Selecione --</option></select>
+                    </div>
+                    <div id="gerenciamento-insumos-container-config" class="mt-4">
+                        <h3 class="text-base sm:text-lg font-medium text-gray-700 mb-3">Insumos Fixos e Estoque Mínimo da Unidade:</h3>
+                        <div id="checkboxes-insumos-config" class="space-y-2 max-h-48 sm:max-h-60 overflow-y-auto custom-scrollbar border border-gray-200 p-3 rounded-md"><p class="text-gray-500 italic text-xs sm:text-sm">Selecione uma unidade.</p></div>
+                        <button id="salvar-insumos-unidade-config" class="mt-4 w-full btn-primary-medlab font-medium py-2 px-4 rounded-md shadow-sm">Salvar Associação</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <div id="notification-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 overflow-y-auto h-full w-full flex items-center justify-center z-50 modal hidden"><div class="modal-content bg-white p-6 rounded-lg shadow-xl transform transition-all sm:max-w-sm sm:w-full"><div class="text-center"><div id="modal-icon-container" class="mx-auto flex items-center justify-center h-12 w-12 rounded-full"></div><h3 class="text-lg leading-6 font-medium text-gray-900 mt-3" id="modal-title-text"></h3><div class="mt-2"><p class="text-sm text-gray-500" id="modal-message-text"></p></div></div><div class="mt-5 sm:mt-6"><button type="button" id="modal-close-button" class="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 btn-primary-medlab text-base font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus-ring-medlab sm:text-sm">Ok</button></div></div></div>
+    
+    <div id="edit-unidade-modal-config" class="fixed inset-0 bg-gray-800 bg-opacity-75 overflow-y-auto h-full w-full flex items-center justify-center z-50 modal hidden">
+        <div class="modal-content bg-white p-6 rounded-lg shadow-xl sm:max-w-lg w-full">
+            <h3 class="text-xl font-semibold text-gray-800 mb-4">Editar Unidade/Usuário</h3>
+            <form id="form-edit-unidade-config" class="space-y-4">
+                <input type="hidden" id="edit-unidade-id-config">
+                <div>
+                    <label for="edit-unidade-nome-config" class="block text-sm font-medium text-gray-700">Nome</label>
+                    <input type="text" id="edit-unidade-nome-config" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none input-focus-medlab sm:text-sm">
+                </div>
+                <div>
+                    <label for="edit-unidade-login-config" class="block text-sm font-medium text-gray-700">Login</label>
+                    <input type="text" id="edit-unidade-login-config" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none input-focus-medlab sm:text-sm">
+                </div>
+                <div>
+                    <label for="edit-unidade-senha-config" class="block text-sm font-medium text-gray-700">Nova Senha</label>
+                    <input type="password" id="edit-unidade-senha-config" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none input-focus-medlab sm:text-sm" placeholder="Deixe em branco para não alterar">
+                </div>
+                <div>
+                    <label for="edit-tipo-acesso-config" class="block text-sm font-medium text-gray-700">Tipo de Acesso</label>
+                    <select id="edit-tipo-acesso-config" required class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus-ring-medlab sm:text-sm rounded-md shadow-sm">
+                        <option value="unidade_restrita">Unidade (Acesso Restrito)</option>
+                        <option value="admin_gestao">Usuário Administrador (Acesso Painel Gestão)</option>
+                    </select>
+                </div>
+                <div class="mt-6 flex justify-end space-x-3">
+                    <button type="button" id="cancel-edit-unidade-btn-config" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 hover:bg-gray-300 rounded-md shadow-sm">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 text-sm font-medium text-white btn-primary-medlab rounded-md shadow-sm">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="delete-unidade-confirm-modal-config" class="fixed inset-0 bg-gray-800 bg-opacity-75 overflow-y-auto h-full w-full flex items-center justify-center z-50 modal hidden">
+        <div class="modal-content bg-white p-6 rounded-lg shadow-xl sm:max-w-md w-full">
+            <div class="text-center">
+                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100"><svg class="h-6 w-6 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg></div>
+                <h3 class="text-lg leading-6 font-medium text-gray-900 mt-3">Confirmar Exclusão</h3>
+                <div class="mt-2"><p class="text-sm text-gray-500">Excluir <strong id="delete-unidade-nome-confirm-config"></strong>?</p></div>
+            </div>
+            <div class="mt-5 sm:mt-6 flex justify-center space-x-3">
+                <button type="button" id="cancel-delete-unidade-btn-config" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 hover:bg-gray-300 rounded-md shadow-sm">Cancelar</button>
+                <button type="button" id="confirm-delete-unidade-btn-config" class="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-md shadow-sm">Excluir</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="utils.js"></script>
+    <script src="configuracoes.js"></script>
+</body>
+</html>

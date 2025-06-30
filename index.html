@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Administrador - MedLab Gestão de Insumos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .login-container { background-color: #ffffff; box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1); }
+        .btn-primary-red { background-color: #D92325; }
+        .btn-primary-red:hover { background-color: #B81D1F; }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="min-h-screen flex items-center justify-center p-4">
+        <div class="login-container p-8 rounded-xl w-full max-w-md">
+            <div class="text-center mb-8">
+                <img src="LOGO MEDLAB (2).png" alt="Logo MedLab" class="mx-auto h-16 w-auto">
+                <h1 class="text-2xl font-bold text-gray-900 mt-4">Acesso Administrador</h1>
+                <p class="text-gray-600 mt-1">Gestão central de insumos MedLab.</p>
+            </div>
+            <form id="login-form" class="space-y-6">
+                <div>
+                    <label for="username" class="block text-sm font-medium text-gray-700">Usuário</label>
+                    <input type="text" id="username" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500">
+                </div>
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700">Senha</label>
+                    <input type="password" id="password" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500">
+                </div>
+                <div id="error-message" class="hidden text-red-600 text-sm text-center p-3 bg-red-100 rounded-lg"></div>
+                <div>
+                    <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white btn-primary-red">
+                        Entrar
+                    </button>
+                </div>
+            </form>
+            <div class="text-center mt-6">
+                <a href="unidade_login.html" class="font-medium text-teal-600 hover:text-teal-500">
+                    Acessar como Unidade
+                </a>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.getElementById('login-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const errorMessageDiv = document.getElementById('error-message');
+            errorMessageDiv.classList.add('hidden');
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            try {
+                const response = await fetch('http://localhost:3000/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                const result = await response.json();
+                if (result.success && result.data.tipoAcesso.includes('admin')) {
+                    window.location.href = 'painel.html';
+                } else {
+                    errorMessageDiv.textContent = result.message || 'Acesso negado.';
+                    errorMessageDiv.classList.remove('hidden');
+                }
+            } catch (error) {
+                errorMessageDiv.textContent = 'Não foi possível conectar ao servidor.';
+                errorMessageDiv.classList.remove('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
