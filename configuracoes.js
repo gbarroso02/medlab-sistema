@@ -262,7 +262,11 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
         const insumosAssociados = associacoesAtuais[unidadeId] || [];
         insumos.sort((a,b) => a.nome.localeCompare(b.nome)).forEach(insumo => {
-            const associacaoExistente = insumosAssociados.find(a => a.insumo_id == insumo.id);
+            
+            // CORREÇÃO APLICADA AQUI
+            // O backend retorna 'id', mas o código procurava por 'insumo_id'.
+            const associacaoExistente = insumosAssociados.find(a => a.id == insumo.id);
+            
             const isChecked = !!associacaoExistente;
             const minimoValor = associacaoExistente ? associacaoExistente.estoque_minimo_unidade : 0;
 
