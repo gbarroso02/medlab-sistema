@@ -1,13 +1,12 @@
 document.addEventListener('DOMContentLoaded', async function() {
     
-    // O endereço da nossa API local
     const API_URL = 'https://medlab-servidor.onrender.com';
 
     // --- ESTADO DA APLICAÇÃO ---
     let insumos = [];
     let unidades = [];
     let associacoesAtuais = {};
-    let unidadeParaManipular = null; // Guarda a unidade para edição ou exclusão
+    let unidadeParaManipular = null;
 
     // --- SELETORES DO DOM ---
     const formInsumoConfig = document.getElementById('form-insumo-config');
@@ -32,7 +31,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     const checkboxesInsumosContainerConfig = document.getElementById('checkboxes-insumos-config');
     const btnSalvarAssociacaoConfig = document.getElementById('salvar-insumos-unidade-config');
 
-    // Seletores dos Modais
     const editUnidadeModalConfig = document.getElementById('edit-unidade-modal-config');
     const deleteUnidadeConfirmModalConfig = document.getElementById('delete-unidade-confirm-modal-config');
 
@@ -54,7 +52,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     
     async function carregarAssociacoesDaUnidade(unidadeId) {
         if (!unidadeId) {
-            associacoesAtuais = {}; // Limpa associações se nenhuma unidade for selecionada
+            associacoesAtuais = {};
             renderizarCheckboxesInsumosConfig();
             return;
         }
@@ -62,7 +60,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             const res = await fetch(`${API_URL}/api/unidade/${unidadeId}/insumos`);
             const data = await res.json();
             if (data.success) {
-                associacoesAtuais[unidadeId] = data.data; // Guarda os dados completos
+                associacoesAtuais[unidadeId] = data.data;
             } else {
                 associacoesAtuais[unidadeId] = [];
             }
@@ -74,6 +72,19 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 
     // --- LÓGICA DE EVENTOS ---
+    if (selectTipoValorCompraConfig) {
+        selectTipoValorCompraConfig.addEventListener('change', function() {
+            if (this.value !== 'unidade_medida_principal') {
+                divEmbalagemDetailsConfig.classList.remove('hidden');
+                inputItensPorEmbalagemConfig.required = true;
+            } else {
+                divEmbalagemDetailsConfig.classList.add('hidden');
+                inputItensPorEmbalagemConfig.required = false;
+                inputItensPorEmbalagemConfig.value = '';
+            }
+        });
+    }
+
     if (formInsumoConfig) {
         formInsumoConfig.addEventListener('submit', async function(event) {
             event.preventDefault();
@@ -93,10 +104,29 @@ document.addEventListener('DOMContentLoaded', async function() {
                 const result = await response.json();
                 if (result.success) {
                     showNotification('Sucesso!', 'Insumo adicionado.');
-                    await inicializar(); // Recarrega tudo
+                    
+                    const unidadeIdSelecionada = selectUnidadeConfig.value;
+
+                    await carregarDadosIniciais();
+                    renderizarListaUnidadesConfig();
+                    renderizarUltimosInsumosConfig();
+                    
+                    selectUnidadeConfig.value = unidadeIdSelecionada;
+                    
+                    if (unidadeIdSelecionada) {
+                        await carregarAssociacoesDaUnidade(unidadeIdSelecionada);
+                    } else {
+                        renderizarCheckboxesInsumosConfig();
+                    }
+                    
                     formInsumoConfig.reset();
-                } else { showNotification('Erro!', result.message, false); }
-            } catch (error) { showNotification('Erro de Conexão', 'Não foi possível salvar o insumo.', false); }
+                    divEmbalagemDetailsConfig.classList.add('hidden');
+                } else { 
+                    showNotification('Erro!', result.message, false); 
+                }
+            } catch (error) { 
+                showNotification('Erro de Conexão', 'Não foi possível salvar o insumo.', false); 
+            }
         });
     }
 
@@ -119,7 +149,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 const result = await response.json();
                 if (result.success) {
                     showNotification('Sucesso!', 'Usuário/Unidade adicionado.');
-                    await inicializar(); // Recarrega tudo
+                    await inicializar();
                     formUnidadeConfig.reset();
                 } else { showNotification('Erro!', result.message, false); }
             } catch (error) { showNotification('Erro de Conexão', 'Não foi possível salvar a unidade.', false); }
@@ -176,7 +206,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 const result = await response.json();
                 if (result.success) {
                     showNotification('Sucesso!', 'Associações salvas com sucesso!');
-                    await carregarAssociacoesDaUnidade(unidadeId); // Recarrega as associações para confirmar
+                    await carregarAssociacoesDaUnidade(unidadeId);
                 } else { showNotification('Erro!', result.message, false); }
             } catch (error) { showNotification('Erro de Conexão', 'Não foi possível salvar as associações.', false); }
         });
@@ -250,15 +280,13 @@ document.addEventListener('DOMContentLoaded', async function() {
         });
     }
     
-    // --- INICIALIZAÇÃO ---
     async function inicializar() {
         await carregarDadosIniciais();
         renderizarListaUnidadesConfig();
         renderizarUltimosInsumosConfig();
-        renderizarCheckboxesInsumosConfig(); // Renderiza vazio inicialmente
+        renderizarCheckboxesInsumosConfig();
     }
     
-    // --- EVENT LISTENERS DOS MODAIS (ADICIONADOS) ---
     document.getElementById('form-edit-unidade-config')?.addEventListener('submit', async function(e) {
         e.preventDefault();
         const id = document.getElementById('edit-unidade-id-config').value;
@@ -270,7 +298,6 @@ document.addEventListener('DOMContentLoaded', async function() {
         };
         if (!dadosAtualizados.senha) delete dadosAtualizados.senha;
 
-        // NOTA: Depende de um endpoint PUT /api/usuarios/:id no seu backend
         try {
             const response = await fetch(`${API_URL}/api/usuarios/${id}`, {
                 method: 'PUT',
@@ -305,7 +332,6 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     document.getElementById('cancel-edit-unidade-btn-config')?.addEventListener('click', () => editUnidadeModalConfig.classList.add('hidden'));
     document.getElementById('cancel-delete-unidade-btn-config')?.addEventListener('click', () => deleteUnidadeConfirmModalConfig.classList.add('hidden'));
-
 
     inicializar();
 });
