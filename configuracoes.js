@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', async function() {
     
     // O endereço da nossa API local
-    const API_URL = 'http://localhost:3000';
+    const API_URL = 'https://medlab-servidor.onrender.com/';
 
     // --- ESTADO DA APLICAÇÃO ---
     let insumos = [];
